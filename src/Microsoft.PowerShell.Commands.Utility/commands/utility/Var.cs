@@ -58,7 +58,6 @@ namespace Microsoft.PowerShell.Commands
             {
                 return _exclude;
             }
-
             set
             {
                 if (value == null)
@@ -71,7 +70,8 @@ namespace Microsoft.PowerShell.Commands
         private string[] _exclude = new string[0];
 
         #region helpers
-
+        
+        
         /// <summary>
         /// Gets the matching variable for the specified name, using the
         /// Include, Exclude, and Scope parameters defined in the base class.
@@ -79,6 +79,14 @@ namespace Microsoft.PowerShell.Commands
         /// <param name="name">
         /// The name or pattern of the variables to retrieve.
         /// </param>
+<<<<<<< HEAD
+=======
+        ///
+        /// <param name="sessionState">
+        /// Specifies the Session State to lookup variable.
+        /// </param>
+        ///
+>>>>>>> Update Get-Variable to include -PSModule Support
         /// <param name="lookupScope">
         /// The scope to do the lookup in. If null or empty the normal scoping rules apply.
         /// </param>
@@ -93,7 +101,12 @@ namespace Microsoft.PowerShell.Commands
         /// A collection of the variables matching the name, include, and exclude
         /// pattern in the specified scope.
         /// </returns>
+<<<<<<< HEAD
         internal List<PSVariable> GetMatchingVariables(string name, string lookupScope, out bool wasFiltered, bool quiet)
+=======
+        ///
+        internal List<PSVariable> GetMatchingVariables(string name, SessionState sessionState, string lookupScope, out bool wasFiltered, bool quiet)
+>>>>>>> Update Get-Variable to include -PSModule Support
         {
             wasFiltered = false;
 
@@ -155,11 +168,11 @@ namespace Microsoft.PowerShell.Commands
             IDictionary<string, PSVariable> variableTable = null;
             if (String.IsNullOrEmpty(lookupScope))
             {
-                variableTable = SessionState.Internal.GetVariableTable();
+                variableTable = sessionState.Internal.GetVariableTable();
             }
             else
             {
-                variableTable = SessionState.Internal.GetVariableTableAtScope(lookupScope);
+                variableTable = sessionState.Internal.GetVariableTableAtScope(lookupScope);
             }
 
             CommandOrigin origin = MyInvocation.CommandOrigin;
@@ -226,6 +239,39 @@ namespace Microsoft.PowerShell.Commands
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Gets the matching variable for the specified name, using the
+        /// Include, Exclude, and Scope parameters defined in the base class.
+        /// </summary>
+        ///
+        /// <param name="name">
+        /// The name or pattern of the variables to retrieve.
+        /// </param>
+        ///
+        /// <param name="lookupScope">
+        /// The scope to do the lookup in. If null or empty the normal scoping
+        /// rules apply.
+        /// </param>
+        ///
+        /// <param name="wasFiltered">
+        /// True is returned if a variable exists of the given name but was filtered
+        /// out via globbing, include, or exclude.
+        /// </param>
+        ///
+        /// <param name="quiet">
+        /// If true, don't report errors when trying to access private variables.
+        /// </param>
+        ///
+        /// <returns>
+        /// A collection of the variables matching the name, include, and exclude
+        /// pattern in the specified scope.
+        /// </returns>
+        ///
+        internal List<PSVariable> GetMatchingVariables(string name, string lookupScope, out bool wasFiltered, bool quiet)
+        {
+            return GetMatchingVariables(name, SessionState, lookupScope, out wasFiltered, quiet);
         }
         #endregion helpers
 
@@ -313,6 +359,23 @@ namespace Microsoft.PowerShell.Commands
                 ExcludeFilters = value;
             }
         }
+        /// <summary>
+        /// Specify Module to get variable from.
+        /// </summary>
+        [Parameter]
+        public PSModuleInfo PSModule
+        {
+            get
+            {
+                return _psmodule;
+            }
+
+            set
+            {
+                _psmodule = value;
+            }
+        }
+        private PSModuleInfo _psmodule;
 
         #endregion parameters
 
@@ -321,11 +384,19 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
+
             foreach (string varName in _name)
             {
                 bool wasFiltered = false;
-                List<PSVariable> matchingVariables =
-                    GetMatchingVariables(varName, Scope, out wasFiltered, /*quiet*/ false);
+                List<PSVariable> matchingVariables;
+                if (_psmodule != null)
+                {
+                    matchingVariables = GetMatchingVariables(varName, _psmodule.SessionState, Scope, out wasFiltered, /*quiet*/ false);
+                }
+                else
+                {
+                    matchingVariables = GetMatchingVariables(varName, Scope, out wasFiltered, /*quiet*/ false);
+                }
 
                 matchingVariables.Sort(
                     delegate (PSVariable left, PSVariable right)
@@ -361,6 +432,7 @@ namespace Microsoft.PowerShell.Commands
                             itemNotFound));
                 }
             }
+            
         }
     }
 
@@ -1236,6 +1308,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
+
             foreach (string varName in Name)
             {
                 bool wasFiltered = false;
