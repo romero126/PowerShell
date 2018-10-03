@@ -360,22 +360,22 @@ namespace Microsoft.PowerShell.Commands
             }
         }
         /// <summary>
-        /// Specify the PSCmdlet to get variable from.
+        /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public PSCmdlet PSCmdlet
+        public SessionState SessionStateEntry
         {
             get
             {
-                return _PSCmdlet;
+                return _sessionState;
             }
 
             set
             {
-                _PSCmdlet = value;
+                _sessionState = value;
             }
         }
-        private PSCmdlet _PSCmdlet;
+        private SessionState _sessionState;
 
         #endregion parameters
 
@@ -384,14 +384,15 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            SessionState sessionState = base.SessionState;
-            if (_PSCmdlet != null) {
-                sessionState = _PSCmdlet.SessionState;
+            if (SessionStateEntry == null)
+            {
+                SessionStateEntry = base.SessionState;
             }
+
             foreach (string varName in _name)
             {
                 bool wasFiltered = false;
-                List<PSVariable> matchingVariables = GetMatchingVariables(varName, sessionState, Scope, out wasFiltered, /*quiet*/ false);
+                List<PSVariable> matchingVariables = GetMatchingVariables(varName, SessionStateEntry, Scope, out wasFiltered, /*quiet*/ false);
 
                 matchingVariables.Sort(
                     delegate (PSVariable left, PSVariable right)
@@ -518,22 +519,22 @@ namespace Microsoft.PowerShell.Commands
         private bool _passThru;
 
         /// <summary>
-        /// Specify the PSCmdlet to get variable from.
+        /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public PSCmdlet PSCmdlet
+        public SessionState SessionStateEntry
         {
             get
             {
-                return _PSCmdlet;
+                return _sessionState;
             }
 
             set
             {
-                _PSCmdlet = value;
+                _sessionState = value;
             }
         }
-        private PSCmdlet _PSCmdlet;
+        private SessionState _sessionState;
 
         #endregion parameters
 
@@ -547,9 +548,8 @@ namespace Microsoft.PowerShell.Commands
             // If Force is not specified, see if the variable already exists
             // in the specified scope. If the scope isn't specified, then
             // check to see if it exists in the current scope.
-            SessionState sessionState = base.SessionState;
-            if (_PSCmdlet != null) {
-                sessionState = _PSCmdlet.SessionState;
+            if (SessionStateEntry == null) {
+                SessionStateEntry = base.SessionState;
             }
 
             if (!Force)
@@ -558,12 +558,12 @@ namespace Microsoft.PowerShell.Commands
                 if (String.IsNullOrEmpty(Scope))
                 {
                     varFound =
-                        sessionState.PSVariable.GetAtScope(Name, "local");
+                        SessionStateEntry.PSVariable.GetAtScope(Name, "local");
                 }
                 else
                 {
                     varFound =
-                        sessionState.PSVariable.GetAtScope(Name, Scope);
+                        SessionStateEntry.PSVariable.GetAtScope(Name, Scope);
                 }
 
                 if (varFound != null)
@@ -609,11 +609,11 @@ namespace Microsoft.PowerShell.Commands
                 {
                     if (String.IsNullOrEmpty(Scope))
                     {
-                        sessionState.Internal.NewVariable(newVariable, Force);
+                        SessionStateEntry.Internal.NewVariable(newVariable, Force);
                     }
                     else
                     {
-                        sessionState.Internal.NewVariableAtScope(newVariable, Scope, Force);
+                        SessionStateEntry.Internal.NewVariableAtScope(newVariable, Scope, Force);
                     }
                 }
                 catch (SessionStateException sessionStateException)
@@ -777,23 +777,22 @@ namespace Microsoft.PowerShell.Commands
         private bool _valueIsFormalParameter;
 
         /// <summary>
-        /// Specify the PSCmdlet to get variable from.
+        /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public PSCmdlet PSCmdlet
+        public SessionState SessionStateEntry
         {
             get
             {
-                return _PSCmdlet;
+                return _sessionState;
             }
 
             set
             {
-                _PSCmdlet = value;
+                _sessionState = value;
             }
         }
-        private PSCmdlet _PSCmdlet;
-
+        private SessionState _sessionState;
 
         #endregion parameters
 
@@ -895,9 +894,9 @@ namespace Microsoft.PowerShell.Commands
         /// </param>
         private void SetVariable(string[] varNames, object varValue)
         {
-            SessionState sessionState = base.SessionState;
-            if (_PSCmdlet != null) {
-                sessionState = _PSCmdlet.SessionState;
+            if (SessionStateEntry == null)
+            {
+                SessionStateEntry = base.SessionState;
             }
             CommandOrigin origin = MyInvocation.CommandOrigin;
 
@@ -916,7 +915,7 @@ namespace Microsoft.PowerShell.Commands
                     // variable in the local scope.
 
                     matchingVariables =
-                        GetMatchingVariables(varName, sessionState, Scope, out wasFiltered, /* quiet */ false);
+                        GetMatchingVariables(varName, SessionStateEntry, Scope, out wasFiltered, /* quiet */ false);
                 }
                 else
                 {
@@ -927,7 +926,7 @@ namespace Microsoft.PowerShell.Commands
                     matchingVariables =
                         GetMatchingVariables(
                             varName,
-                            sessionState,
+                            SessionStateEntry,
                             System.Management.Automation.StringLiterals.Local,
                             out wasFiltered,
                             false);
@@ -989,12 +988,12 @@ namespace Microsoft.PowerShell.Commands
                             if (String.IsNullOrEmpty(Scope))
                             {
                                 result =
-                                    sessionState.Internal.SetVariable(varToSet, Force, origin);
+                                    SessionStateEntry.Internal.SetVariable(varToSet, Force, origin);
                             }
                             else
                             {
                                 result =
-                                    sessionState.Internal.SetVariableAtScope(varToSet, Scope, Force, origin);
+                                    SessionStateEntry.Internal.SetVariableAtScope(varToSet, Scope, Force, origin);
                             }
 
                             if (_passThru && result != null)
@@ -1176,22 +1175,22 @@ namespace Microsoft.PowerShell.Commands
         private bool _force;
 
         /// <summary>
-        /// Specify the PSCmdlet to get variable from.
+        /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public PSCmdlet PSCmdlet
+        public SessionState SessionStateEntry
         {
             get
             {
-                return _PSCmdlet;
+                return _sessionState;
             }
 
             set
             {
-                _PSCmdlet = value;
+                _sessionState = value;
             }
         }
-        private PSCmdlet _PSCmdlet;
+        private SessionState _sessionState;
 
         #endregion parameters
 
@@ -1200,9 +1199,9 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            SessionState sessionState = base.SessionState;
-            if (_PSCmdlet != null) {
-                sessionState = _PSCmdlet.SessionState;
+            if (SessionStateEntry == null)
+            {
+                SessionStateEntry = base.SessionState;
             }
 
             // Removal of variables only happens in the local scope if the
@@ -1219,7 +1218,7 @@ namespace Microsoft.PowerShell.Commands
                 bool wasFiltered = false;
 
                 List<PSVariable> matchingVariables =
-                    GetMatchingVariables(varName, sessionState, Scope, out wasFiltered, /* quiet */ false);
+                    GetMatchingVariables(varName, SessionStateEntry, Scope, out wasFiltered, /* quiet */ false);
 
                 if (matchingVariables.Count == 0 && !wasFiltered)
                 {
@@ -1255,11 +1254,11 @@ namespace Microsoft.PowerShell.Commands
                         {
                             if (String.IsNullOrEmpty(Scope))
                             {
-                                sessionState.Internal.RemoveVariable(matchingVariable, _force);
+                                SessionStateEntry.Internal.RemoveVariable(matchingVariable, _force);
                             }
                             else
                             {
-                                sessionState.Internal.RemoveVariableAtScope(matchingVariable, Scope, _force);
+                                SessionStateEntry.Internal.RemoveVariableAtScope(matchingVariable, Scope, _force);
                             }
                         }
                         catch (SessionStateException sessionStateException)
@@ -1366,23 +1365,24 @@ namespace Microsoft.PowerShell.Commands
         }
         private bool _passThru;
 
+
         /// <summary>
-        /// Specify the PSCmdlet to get variable from.
+        /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public PSCmdlet PSCmdlet
+        public SessionState SessionStateEntry
         {
             get
             {
-                return _PSCmdlet;
+                return _sessionState;
             }
 
             set
             {
-                _PSCmdlet = value;
+                _sessionState = value;
             }
         }
-        private PSCmdlet _PSCmdlet;
+        private SessionState _sessionState;
 
         #endregion parameters
 
@@ -1391,18 +1391,17 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-            SessionState sessionState = base.SessionState;
-            if (_PSCmdlet != null) {
-                sessionState = _PSCmdlet.SessionState;
+            if (SessionStateEntry == null)
+            {
+                SessionStateEntry = base.SessionState;
             }
-
 
             foreach (string varName in Name)
             {
                 bool wasFiltered = false;
 
                 List<PSVariable> matchingVariables =
-                    GetMatchingVariables(varName, sessionState, Scope, out wasFiltered, /* quiet */ false);
+                    GetMatchingVariables(varName, SessionStateEntry, Scope, out wasFiltered, /* quiet */ false);
 
                 if (matchingVariables.Count == 0 && !wasFiltered)
                 {
@@ -1445,13 +1444,13 @@ namespace Microsoft.PowerShell.Commands
 
                                 matchingVariable.SetOptions(matchingVariable.Options & ~ScopedItemOptions.ReadOnly, true);
 
-                                result = ClearValue(matchingVariable);
+                                result = ClearValue(matchingVariable, SessionStateEntry);
 
                                 matchingVariable.SetOptions(matchingVariable.Options | ScopedItemOptions.ReadOnly, true);
                             }
                             else
                             {
-                                result = ClearValue(matchingVariable);
+                                result = ClearValue(matchingVariable, SessionStateEntry);
                             }
                         }
                         catch (SessionStateException sessionStateException)
