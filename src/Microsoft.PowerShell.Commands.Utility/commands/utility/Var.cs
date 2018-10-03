@@ -79,14 +79,11 @@ namespace Microsoft.PowerShell.Commands
         /// <param name="name">
         /// The name or pattern of the variables to retrieve.
         /// </param>
-<<<<<<< HEAD
-=======
         ///
         /// <param name="sessionState">
         /// Specifies the Session State to lookup variable.
         /// </param>
         ///
->>>>>>> Update Get-Variable to include -PSModule Support
         /// <param name="lookupScope">
         /// The scope to do the lookup in. If null or empty the normal scoping rules apply.
         /// </param>
@@ -101,12 +98,8 @@ namespace Microsoft.PowerShell.Commands
         /// A collection of the variables matching the name, include, and exclude
         /// pattern in the specified scope.
         /// </returns>
-<<<<<<< HEAD
-        internal List<PSVariable> GetMatchingVariables(string name, string lookupScope, out bool wasFiltered, bool quiet)
-=======
         ///
         internal List<PSVariable> GetMatchingVariables(string name, SessionState sessionState, string lookupScope, out bool wasFiltered, bool quiet)
->>>>>>> Update Get-Variable to include -PSModule Support
         {
             wasFiltered = false;
 
@@ -1486,15 +1479,11 @@ namespace Microsoft.PowerShell.Commands
         /// <param name="matchingVariable">
         /// The variable that matched the name parameter(s).
         /// </param>
-<<<<<<< HEAD
-        private PSVariable ClearValue(PSVariable matchingVariable)
-=======
         ///
         /// <param name="sessionState">
         /// The variable that matched the name parameter(s).
         /// </param>
         private PSVariable ClearValue(PSVariable matchingVariable, SessionState sessionState)
->>>>>>> Updated VariableCmdlets to support PSCmdlet Scoping.
         {
             PSVariable result = matchingVariable;
             if (Scope != null)
@@ -1508,9 +1497,6 @@ namespace Microsoft.PowerShell.Commands
             }
             return result;
         }
-<<<<<<< HEAD
-    }
-=======
 
         /// <summary>
         /// Clears the value of the variable using the PSVariable instance if the scope
@@ -1526,5 +1512,5 @@ namespace Microsoft.PowerShell.Commands
             return ClearValue(matchingVariable, SessionState);
         }
     } // ClearVariableCommand
->>>>>>> Updated VariableCmdlets to support PSCmdlet Scoping.
 }
+
