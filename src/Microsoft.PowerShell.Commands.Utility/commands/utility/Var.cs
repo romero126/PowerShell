@@ -373,19 +373,7 @@ namespace Microsoft.PowerShell.Commands
         /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public SessionState SessionStateEntry
-        {
-            get
-            {
-                return _sessionState;
-            }
-
-            set
-            {
-                _sessionState = value;
-            }
-        }
-        private SessionState _sessionState;
+        public SessionState SessionStateEntry;
 
         #endregion parameters
 
@@ -394,6 +382,13 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
+            // If LanguageMode is not set to FullLanguage then LockDown SessionStateEntry.
+            if ((SessionStateEntry != null) && (SessionState.LanguageMode != PSLanguageMode.FullLanguage) )
+            {
+                string ErrorMessage = String.Format("SessionStateEntry cannot be defined in {0} LanguageMode", SessionState.LanguageMode);
+                WriteError( new PSSecurityException(ErrorMessage).ErrorRecord );
+                return;
+            }
             if (SessionStateEntry == null)
             {
                 SessionStateEntry = base.SessionState;
@@ -534,19 +529,7 @@ namespace Microsoft.PowerShell.Commands
         /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public SessionState SessionStateEntry
-        {
-            get
-            {
-                return _sessionState;
-            }
-
-            set
-            {
-                _sessionState = value;
-            }
-        }
-        private SessionState _sessionState;
+        public SessionState SessionStateEntry;
 
         #endregion parameters
 
@@ -558,12 +541,21 @@ namespace Microsoft.PowerShell.Commands
         ///
         protected override void ProcessRecord()
         {
+            // If LanguageMode is not set to FullLanguage then LockDown SessionStateEntry.
+            if ((SessionStateEntry != null) && (SessionState.LanguageMode != PSLanguageMode.FullLanguage) )
+            {
+                string ErrorMessage = String.Format("SessionStateEntry cannot be defined in {0} LanguageMode", SessionState.LanguageMode);
+                WriteError( new PSSecurityException(ErrorMessage).ErrorRecord );
+                return;
+            }
+            if (SessionStateEntry == null)
+            {
+                SessionStateEntry = base.SessionState;
+            }
+
             // If Force is not specified, see if the variable already exists
             // in the specified scope. If the scope isn't specified, then
             // check to see if it exists in the current scope.
-            if (SessionStateEntry == null) {
-                SessionStateEntry = base.SessionState;
-            }
 
             if (!Force)
             {
@@ -799,19 +791,7 @@ namespace Microsoft.PowerShell.Commands
         /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public SessionState SessionStateEntry
-        {
-            get
-            {
-                return _sessionState;
-            }
-
-            set
-            {
-                _sessionState = value;
-            }
-        }
-        private SessionState _sessionState;
+        public SessionState SessionStateEntry;
 
         #endregion parameters
 
@@ -821,6 +801,18 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void BeginProcessing()
         {
+            // If LanguageMode is not set to FullLanguage then LockDown SessionStateEntry.
+            if ((SessionStateEntry != null) && (SessionState.LanguageMode != PSLanguageMode.FullLanguage) )
+            {
+                string ErrorMessage = String.Format("SessionStateEntry cannot be defined in {0} LanguageMode", SessionState.LanguageMode);
+                WriteError( new PSSecurityException(ErrorMessage).ErrorRecord );
+                return;
+            }
+            if (SessionStateEntry == null)
+            {
+                SessionStateEntry = base.SessionState;
+            }
+
             if (Name != null && Name.Length > 0)
             {
                 _nameIsFormalParameter = true;
@@ -918,10 +910,6 @@ namespace Microsoft.PowerShell.Commands
         ///
         private void SetVariable(string[] varNames, object varValue)
         {
-            if (SessionStateEntry == null)
-            {
-                SessionStateEntry = base.SessionState;
-            }
             CommandOrigin origin = MyInvocation.CommandOrigin;
 
             foreach (string varName in varNames)
@@ -1206,19 +1194,7 @@ namespace Microsoft.PowerShell.Commands
         /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public SessionState SessionStateEntry
-        {
-            get
-            {
-                return _sessionState;
-            }
-
-            set
-            {
-                _sessionState = value;
-            }
-        }
-        private SessionState _sessionState;
+        public SessionState SessionStateEntry;
 
         #endregion parameters
 
@@ -1228,6 +1204,13 @@ namespace Microsoft.PowerShell.Commands
         ///
         protected override void ProcessRecord()
         {
+            // If LanguageMode is not set to FullLanguage then LockDown SessionStateEntry.
+            if ((SessionStateEntry != null) && (SessionState.LanguageMode != PSLanguageMode.FullLanguage) )
+            {
+                string ErrorMessage = String.Format("SessionStateEntry cannot be defined in {0} LanguageMode", SessionState.LanguageMode);
+                WriteError( new PSSecurityException(ErrorMessage).ErrorRecord );
+                return;
+            }
             if (SessionStateEntry == null)
             {
                 SessionStateEntry = base.SessionState;
@@ -1240,7 +1223,6 @@ namespace Microsoft.PowerShell.Commands
             {
                 Scope = "local";
             }
-
 
             foreach (string varName in Name)
             {
@@ -1397,24 +1379,11 @@ namespace Microsoft.PowerShell.Commands
         }
         private bool _passThru;
 
-
         /// <summary>
         /// Specify the SessionState to get variable from.
         /// </summary>
         [Parameter]
-        public SessionState SessionStateEntry
-        {
-            get
-            {
-                return _sessionState;
-            }
-
-            set
-            {
-                _sessionState = value;
-            }
-        }
-        private SessionState _sessionState;
+        public SessionState SessionStateEntry;
 
         #endregion parameters
 
@@ -1424,6 +1393,13 @@ namespace Microsoft.PowerShell.Commands
         ///
         protected override void ProcessRecord()
         {
+            // If LanguageMode is not set to FullLanguage then LockDown SessionStateEntry.
+            if ((SessionStateEntry != null) && (SessionState.LanguageMode != PSLanguageMode.FullLanguage) )
+            {
+                string ErrorMessage = String.Format("SessionStateEntry cannot be defined in {0} LanguageMode", SessionState.LanguageMode);
+                WriteError( new PSSecurityException(ErrorMessage).ErrorRecord );
+                return;
+            }
             if (SessionStateEntry == null)
             {
                 SessionStateEntry = base.SessionState;
