@@ -91,7 +91,6 @@ namespace Microsoft.PowerShell.Commands
                 if (SessionState.LanguageMode != PSLanguageMode.FullLanguage)
                 {
                     string ErrorMessage = String.Format("cannot be defined in {0} LanguageMode", SessionState.LanguageMode);
-                    PSSecurityException exception = new PSSecurityException(ErrorMessage);
                     throw new System.Exception(ErrorMessage);
                 }
                 _sessionStateEntry = value;
