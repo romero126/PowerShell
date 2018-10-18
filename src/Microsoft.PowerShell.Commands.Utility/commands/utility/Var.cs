@@ -75,32 +75,37 @@ namespace Microsoft.PowerShell.Commands
         private string[] _exclude = new string[0];
 
         /// <summary>
-        /// Specify the SessionState to get variable from.
+        /// Sets the specific the SessionState to get variable from.
         /// </summary>
+        ///
         [Parameter]
-        public SessionState SessionStateEntry {
-            get {
+        public SessionState SessionStateEntry
+        {
+            get
+            {
                 if (_sessionStateEntry == null)
                 {
-                    return base.SessionState;
+                    return SessionState;
                 }
+                
                 return _sessionStateEntry;
             }
-            set {
+            set
+            {
                 // If LanguageMode is not set to FullLanguage prevent access to SessionStateEntry.
                 if (SessionState.LanguageMode != PSLanguageMode.FullLanguage)
                 {
-                    string ErrorMessage = String.Format("cannot be defined in {0} LanguageMode", SessionState.LanguageMode);
-                    throw new System.Exception(ErrorMessage);
+                    String errorMessage = String.Format("cannot be defined in {0} LanguageMode", SessionState.LanguageMode);
+                    throw new System.Exception(errorMessage);
                 }
+
                 _sessionStateEntry = value;
             }
         }
         private SessionState _sessionStateEntry;
 
         #region helpers
-        
-        
+                
         /// <summary>
         /// Gets the matching variable for the specified name, using the
         /// Include, Exclude, and Scope parameters defined in the base class.
@@ -336,8 +341,6 @@ namespace Microsoft.PowerShell.Commands
         }
         private string[] _name = new string[] { "*" };
 
-
-
         /// <summary>
         /// Output only the value(s) of the requested variable(s).
         /// </summary>
@@ -353,8 +356,8 @@ namespace Microsoft.PowerShell.Commands
                 _valueOnly = value;
             }
         }
-        private bool _valueOnly;
 
+        private bool _valueOnly;
 
         /// <summary>
         /// The Include parameter for all the variable commands
@@ -399,7 +402,6 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void ProcessRecord()
         {
-
             foreach (string varName in _name)
             {
                 bool wasFiltered = false;
@@ -540,7 +542,6 @@ namespace Microsoft.PowerShell.Commands
         ///
         protected override void ProcessRecord()
         {
-
             // If Force is not specified, see if the variable already exists
             // in the specified scope. If the scope isn't specified, then
             // check to see if it exists in the current scope.
@@ -634,7 +635,6 @@ namespace Microsoft.PowerShell.Commands
         } // ProcessRecord
     } // NewVariableCommand
 
-
     /// <summary>
     /// This class implements set-variable command
     /// </summary>
@@ -697,7 +697,6 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         [Parameter]
         public string Description { get; set; }
-
 
         /// <summary>
         /// The options for the variable to specify if the variable should
@@ -783,7 +782,6 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void BeginProcessing()
         {
-
             if (Name != null && Name.Length > 0)
             {
                 _nameIsFormalParameter = true;
@@ -1039,7 +1037,6 @@ namespace Microsoft.PowerShell.Commands
                                     matchingVariable.Value = varValue;
                                 }
 
-
                                 if (Description != null)
                                 {
                                     matchingVariable.Description = Description;
@@ -1169,7 +1166,6 @@ namespace Microsoft.PowerShell.Commands
         ///
         protected override void ProcessRecord()
         {
-
             // Removal of variables only happens in the local scope if the
             // scope wasn't explicitly specified by the user.
 
